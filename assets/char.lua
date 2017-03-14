@@ -62,15 +62,32 @@ function char:create(world,x,y,scale)
   function char:draw(camera)
     local x,y = self.body:getX(),self.body:getY()
     local mouseX,mouseY = camera:mousePosition()
-    local angle = math.atan2((mouseY - x), (mouseX - y))
+    local angle = math.atan2((mouseY - y), (mouseX - x))
+    local head = nil
     
     
     love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
     love.graphics.polygon("line", x,y,mouseX,mouseY,x,y)       
+       
     
-    love.graphics.draw(self.squiteScheet, self.quads['body']['idle'], x-(self.scale*6), y-(self.scale*10),0,self.scale,self.scale)
-    love.graphics.draw(self.squiteScheet, self.quads['head']['normal']['idle'], x-(self.scale*4), y-(self.scale*11),0,self.scale,self.scale)
-    love.graphics.draw(self.squiteScheet, self.quads['arms']['idle'], x, y-(self.scale*5),0,self.scale,self.scale)
+    
+    if angle>(math.pi/3) and angle<((2*math.pi)/3) then    
+      head = self.quads['head']['normal']['down']
+    elseif  angle>((2*math.pi)/3) or angle<-((2*math.pi)/3) then
+       head = self.quads['head']['normal']['back']    
+    elseif  angle<-(math.pi/3) and angle>-((2*math.pi)/3) then
+      head = self.quads['head']['normal']['up']
+    else
+      head = self.quads['head']['normal']['idle']         
+    end
+    
+    love.graphics.draw(self.squiteScheet, self.quads['body']['idle'], x-(self.scale*6), y-(self.scale*10),0,self.scale,self.scale)    
+    love.graphics.draw(self.squiteScheet, head, x-(self.scale*4), y-(self.scale*11),0,self.scale,self.scale)     
+    love.graphics.draw(self.squiteScheet, self.quads['arms']['idle'], x, y,angle,self.scale,self.scale,0,5)
+    
+    love.graphics.circle("fill",x,y,2)    
+    
+    love.graphics.print( angle, x-(self.scale*6), y-(self.scale*20) ,self.rotation,self.scaleX,self.scaleY)
     
       
       
