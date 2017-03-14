@@ -1,10 +1,12 @@
 function love.load()
 
+  require 'assets/char'
   require 'assets/bulletManager'
   require 'modules/camera'
   require 'scene/stage1'
   require 'modules/timeOverLayer'
-
+  
+  love.graphics.setDefaultFilter('nearest','nearest')
   love.physics.setMeter(64)
   world = love.physics.newWorld(0, 9.81*64, true)
 
@@ -21,6 +23,8 @@ function love.load()
   objects.ball.shape = love.physics.newCircleShape(20)
   objects.ball.fixture = love.physics.newFixture(objects.ball.body, objects.ball.shape, 1)
   objects.ball.fixture:setRestitution(0.0)
+  
+  objects.char = char:create(world,650/2,50,5)
 
 
   timeLayer = timeOverLayer:create(0,50,50,0,2,2)
@@ -63,10 +67,11 @@ function love.draw()
   camera:setPosition(objects.ball.body:getX() - screenWidth,objects.ball.body:getY() - screenHeight);
 
 
-  love.graphics.setColor(193, 47, 14)
+  love.graphics.setColor(255, 255, 255)
   love.graphics.circle("fill", objects.ball.body:getX(), objects.ball.body:getY(), objects.ball.shape:getRadius())
 
   stage:draw()
+  objects.char:draw(camera)
 
   for i,v in ipairs(bullets) do
 
