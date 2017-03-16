@@ -2,6 +2,7 @@ function love.load()
 
   require 'assets/char'
   require 'assets/bulletManager'
+  require 'assets/arrowManager'
   require 'modules/camera'
   require 'scene/stage1'
   require 'modules/timeOverLayer'
@@ -16,20 +17,10 @@ function love.load()
   bullets = {}
 
   stage = scenario:load(world);
-
-
-  objects.ball = {}
-  objects.ball.body = love.physics.newBody(world, 650/2, 650/2, "dynamic")
-  objects.ball.shape = love.physics.newCircleShape(20)
-  objects.ball.fixture = love.physics.newFixture(objects.ball.body, objects.ball.shape, 1)
-  objects.ball.fixture:setRestitution(0.0)
+  
   
   objects.char = char:create(world,650/2,50,5)
-
-
   timeLayer = timeOverLayer:create(0,50,50,0,2,2)
-
-
 
 
   love.graphics.setBackgroundColor(104, 136, 248)
@@ -43,14 +34,14 @@ function love.update(dt)
 
 
   if love.keyboard.isDown("right") then
-    objects.ball.body:applyForce(400, 0)
+    objects.char.body:applyForce(400, 0)
   elseif love.keyboard.isDown("left") then
-    objects.ball.body:applyForce(-400, 0)
+    objects.char.body:applyForce(-400, 0)
   elseif love.keyboard.isDown("up") then
-    objects.ball.body:applyLinearImpulse(0,-20)
+    objects.char.body:applyLinearImpulse(0,-20)
   elseif love.keyboard.isDown("r") then
-    objects.ball.body:setPosition(650/2, 650/2)
-    objects.ball.body:setLinearVelocity(0, 0)
+    objects.char.body:setPosition(650/2, 650/2)
+    objects.char.body:setLinearVelocity(0, 0)
   end
 
 
@@ -64,11 +55,11 @@ function love.draw()
   local screenWidth = love.graphics.getWidth()/2
   local screenHeight = love.graphics.getHeight()/2
 
-  camera:setPosition(objects.ball.body:getX() - screenWidth,objects.ball.body:getY() - screenHeight);
+  camera:setPosition(objects.char.body:getX() - screenWidth,objects.char.body:getY() - screenHeight);
 
 
   love.graphics.setColor(255, 255, 255)
-  love.graphics.circle("fill", objects.ball.body:getX(), objects.ball.body:getY(), objects.ball.shape:getRadius())
+  
 
   stage:draw()
   objects.char:draw(camera)
@@ -87,16 +78,16 @@ end
 function love.mousepressed(x, y, button)
 	if button == 1 then
 
-    local ball = objects.ball
+    local char = objects.char
 
-		local startX = ball.body:getX()
-		local startY = ball.body:getY()
+		local startX = char.body:getX()
+		local startY = char.body:getY()
 
     local mouseX,mouseY = camera:mousePosition()
 
 		local angle = math.atan2((mouseY - startY), (mouseX - startX))
 
-    local b = bulletManager:create_new(world,startX,startY,1,angle,1000)
+    local b = arrowManager:create_new(world,startX,startY,1,angle,1000)
 
 		table.insert(bullets, b)
 	end
