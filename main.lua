@@ -6,7 +6,7 @@ function love.load()
   require 'modules/camera'
   require 'scene/stage1'
   require 'modules/timeOverLayer'
-  
+
   love.graphics.setDefaultFilter('nearest','nearest')
   love.physics.setMeter(64)
   world = love.physics.newWorld(0, 9.81*64, true)
@@ -17,9 +17,8 @@ function love.load()
   bullets = {}
 
   stage = scenario:load(world);
-  
-  
-  objects.char = char:create(world,650/2,50,5)
+
+  objects.char = char:create(world,650/2,50,3)
   timeLayer = timeOverLayer:create(0,50,50,0,2,2)
 
 
@@ -29,8 +28,9 @@ end
 
 
 function love.update(dt)
-  world:update(dt)
+  stage:update(dt)
   timeLayer:update(dt)
+
 
 
   if love.keyboard.isDown("right") then
@@ -44,6 +44,7 @@ function love.update(dt)
     objects.char.body:setLinearVelocity(0, 0)
   end
 
+  world:update(dt)
 
 end
 
@@ -59,7 +60,7 @@ function love.draw()
 
 
   love.graphics.setColor(255, 255, 255)
-  
+
 
   stage:draw()
   objects.char:draw(camera)
